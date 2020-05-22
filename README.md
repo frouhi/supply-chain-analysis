@@ -27,15 +27,31 @@ talk about data generation. Next, I will discuss how my algorithm works in detai
 
 ## Instructions and Available Commands
 To use my program, first you need to have some data. Some randomly generated data is already availabel, but you can also generate other randomly generated data using the data_generator.py (if you want to change some parameters). You also need to make sure the path in interuption_analyzer.py points to your data. Finally, you can run the interuption_analyzer.py and use the following commands:
-
+* remove company [company_name]
+* remove relation [supplier_name] [costumer_name]
+* reduce production [production_drop_percentage] [company_name]
+* reduce relation_capacity [capacity_drop_percentage] [supplier_name] [costumer_name]
+* shrink market [market_shrinkage_percentage] [company_name]
+* predict [company_name]
+* set iteration_limit [iteration_limit]
+* set depth_limit [depth_limit]
+* set reduction_factor [reduction_factor]
+* config
+* refresh
+* exit
+* help
 
 ## Data Generation
 The most challenging thing about supply chains is that the data is not easily accessible. Bloomberg has done an amazing job collecting the supply chain data.
 Bloomberg uses human and computerized methods to aggregate publicly disclosed data. Additionally, Bloomberg uses algorithmic and mathematical
 methods to complete this dataset. The Bloomberg supply chain data is available through the SPLC\<GO> command in bloomberg terminal, and more details 
-is available through the maps commands.
+are available through the maps commands. The output of SPLC\<GO> command looks as follows:
+![image 1](resources/SPLC.jpg)
+[Credit: https://www.bloomberg.com/professional/blog/seen-60-minutes/]
 
-note: should merge same companies to get results (we split them based on product)
+I did not have access to this data, so I created a random json file by writing data_generator.py. This code generates random data that is close in its organization to the
+output of the SPLC command. One very important thing to note is that my code is based on the assumption that each company has only one product. This assumption is not tru in reality,
+but we can split the company into smaller ones in our data and then use the code, and at the end merge them together.
 
 ## Algorithm and Detailed Description
 In previous section, I explained the format of the data. The main program reads in this JSON file and converts it to a directed graph.
