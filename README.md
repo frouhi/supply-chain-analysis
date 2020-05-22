@@ -31,6 +31,8 @@ Bloomberg uses human and computerized methods to aggregate publicly disclosed da
 methods to complete this dataset. The Bloomberg supply chain data is available through the SPLC\<GO> command in bloomberg terminal, and more details 
 is available through the maps commands.
 
+note: should merge same companies to get results (we split them based on product)
+
 ## Algorithm and Detailed Description
 In previous section, I explained the format of the data. The main program reads in this JSON file and converts it to a directed graph.
 Each node represents a company and contains all of its metadata. Each node has pointers to the costumers of the company it represents.
@@ -40,12 +42,21 @@ The corresponding graph is as follows:
 As you can see, node A points to node B, meaning that company B is a costumer of A. Similarly, there is an edge from B to C which means that C is a costumer of B.
 
 After generating the graph, my program listens for user commands, and executes the relevant operations. User can apply any supply chain disruptions to the model using available commands
-such as "remove company" and 
+such as "remove company", "remove relation", "reduce production", and "shrink market". These commands apply the requested changes to the graph by updating one or two nodes in the graph.
+Next, the programs runs two modified BFS algorihtms to predict how other parts of the graph will be affected and how other companies and their relations will be disrupted. The predicted disruptions and the updated metadata are stored in the nodes. This process can continue as many times as users want. Finally, users can ask for the predicted disruptions in a specific company by
+using the "predict [company]" command. This command prints the predicted disruptions that are stored in a node."
+
+At this point, we have explored the general idea behind this program. The most important and the most complicated part of this program is the algorithm that gets a disrupted node, and updates other nodes based on this disruption. To do this we need to explore the nodes that are affected by the disruption, so BFS and DFS are our best candidates.
+Among these two options, BFS is a better candidate. The reason is that we want the disruption in one company to reach and affect it's direct costumers before affecting its indirect costumers (costumers of its costumers), and BFS explores all of the children of a node before moving on to its igrand children. DFS does not offer this property. Having this property is important because this property is closer to reality, and since visiting a node and a cycle multiple times is allowed in this algorithm (up to a limit), the results can be slightly different.
+
+So far, we saw that each node is visited using a BFS algorithm. Now, we should explore how each node is modified when they are visited. The reasiest case is if the node has only one supplier that has been affected. in this case, the production of the node is equally dropped. Lets look at the following example:
+![graph 1](resources/graph2.png)
+
 
 ### General Algorithm
 
 
-### Handling Loops
+### Handling Cycles
 
 ### Diminishing Effect
 
@@ -57,4 +68,3 @@ such as "remove company" and
 
 
 
-note: should merge same companies to get results (we split them based on product)
