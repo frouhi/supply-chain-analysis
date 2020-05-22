@@ -2,7 +2,7 @@ import json
 import random
 
 COMPANY_COUNT = 100
-MAX_EDGE = 3
+MAX_EDGE = 5
 PRODUCT_COUNT = 5
 PRODUCTION_VOLUME_MAX = 200
 data = {}

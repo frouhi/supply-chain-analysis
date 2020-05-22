@@ -94,8 +94,8 @@ def interactive_shell(node_dict):
             print("remove company [company_name]\n"
                   "remove relation [supplier_name] [costumer_name]\n"
                   "reduce production [production_drop_percentage] [company_name]\n"
-                  "shrink market [market_shrinkage_percentage] [company_name]\n"
                   "reduce relation_capacity [capacity_drop_percentage] [supplier_name] [costumer_name]\n"
+                  "shrink market [market_shrinkage_percentage] [company_name]\n"
                   "predict [company_name]\n"
                   "set iteration_limit [iteration_limit]\n"
                   "set depth_limit [depth_limit]\n"
@@ -124,6 +124,46 @@ def interactive_shell(node_dict):
                 modified_bfs(splitted_inp[2], node_dict, iteration_limit, depth_limit, reduction_factor)
             else:
                 print("ERROR: the company is not present in the model!")
+        elif "remove relation" in inp:
+            supplier = node_dict[splitted_inp[2]]
+            costumer = node_dict[splitted_inp[3]]
+            if costumer in supplier.costumers:
+                supplier.out_edge_capacity_drop[costumer.name] = 100
+                costumer.in_edge_capacity_drop[supplier.name] = 100
+                calculate_production_drop(costumer, reduction_factor)
+                modified_bfs(splitted_inp[3], node_dict, iteration_limit, depth_limit, reduction_factor)
+            else:
+                print("ERROR: the relation is not present in the model!")
+        elif "reduce production" in inp:
+            if splitted_inp[3] in node_dict:
+                drop = float(splitted_inp[2])
+                node = node_dict[splitted_inp[2]]
+                node.production_drop = drop
+                modified_bfs(splitted_inp[2], node_dict, iteration_limit, depth_limit, reduction_factor)
+            else:
+                print("ERROR: the company is not present in the model!")
+        elif "reduce relation_capacity" in inp:
+            supplier = node_dict[splitted_inp[3]]
+            costumer = node_dict[splitted_inp[4]]
+            drop = float(splitted_inp[2])
+            if costumer in supplier.costumers:
+                if drop>supplier.out_edge_capacity_drop[costumer.name]:
+                    supplier.out_edge_capacity_drop[costumer.name] = 100
+                    costumer.in_edge_capacity_drop[supplier.name] = 100
+                    calculate_production_drop(costumer, reduction_factor)
+                    modified_bfs(splitted_inp[4], node_dict, iteration_limit, depth_limit, reduction_factor)
+            else:
+                print("ERROR: the relation is not present in the model!")
+        elif "set iteration_limit" in inp:
+            iteration_limit = float(splitted_inp[2])
+        elif "set depth_limit" in inp:
+            depth_limit = float(splitted_inp[2])
+        elif "set reduction_factor" in inp:
+            reduction_factor = float(splitted_inp[2])
+        elif "config" in inp:
+            print("depth_limit",depth_limit)
+            print("reduction_factor",reduction_factor)
+            print("iteration_limit",iteration_limit)
         inp = input()
 
 
