@@ -1,9 +1,23 @@
-import numpy as np
+"""
+This code reads the json supply chain data and creates a graph. Then,
+users can use various commands to make changes to this model, and
+the model will predict how those changes can affect other parts of the model.
+I wrote this program to demonstrate my interest in Bloomberg and Bloomberg tech,
+and to demonstrate my problem solving skills.
+Author: Farhang Rouhi
+"""
 import json
 
 
 class Node:
+    """This is the node class that represents a company and stores company metadata"""
     def __init__(self, name, product, production_volume):
+        """
+        This is the constructor of Node class
+        :param name: name or id of the company
+        :param product: product of this company
+        :param production_volume: production volume
+        """
         self.name = name
         self.product = product
         self.production_volume = production_volume
@@ -17,7 +31,15 @@ class Node:
 
 
 class NodeWrapper:
+    """This wrapper class is used to keep track of the depth and the path in BFS"""
     def __init__(self, node, depth=0, visited_by=None):
+        """
+        This is the constructor for NodeWrapper class
+        :param node: the node that this class wraps
+        :param depth: depth of the path to this node
+        :param visited_by: which nodes have visited this node,
+        and how many times (optional)
+        """
         if visited_by is None:
             visited_by = {}
         self.node = node
@@ -26,6 +48,10 @@ class NodeWrapper:
 
 
 def build_graph():
+    """
+    This function builds the graph using the json file
+    :return: generated graph
+    """
     file = open("../data/data.json", "r")
     data = json.load(file)
     node_dict = {}
@@ -43,6 +69,11 @@ def build_graph():
 
 
 def calculate_production_drop(node,reduction_factor):
+    """
+    This function calculates the production drop of a node
+    :param node: the node that we want to update
+    :param reduction_factor: by what factor we want to reduce the affect
+    """
     original_supply = {}
     dropped_supply = {}
     for supplier in node.suppliers:
@@ -60,8 +91,17 @@ def calculate_production_drop(node,reduction_factor):
     node.production_drop = max(drops_list) * ((100 - reduction_factor) / 100)
 
 
-# do BFS with multiple iterations (map edges to iterations counts)
 def modified_bfs(start_id, node_dict, iteration_limit, depth_limit, reduction_factor):
+    """
+    This is a modified implementation of breadth-first search algorithm that
+    follows the chains of costumers starting from a node, and determines if
+    they are effected by the supply chain disruption
+    :param start_id: the name of the node we want to start from (the node that was disrupted)
+    :param node_dict: dictionary mapping names to node pointers
+    :param iteration_limit: maximum number of traversing cycles
+    :param depth_limit: maximum depth to explore
+    :param reduction_factor: how much we want to reduce the affect by
+    """
     queue = [NodeWrapper(node_dict[start_id])]
     while queue:
         node_wrapper = queue.pop(0)
@@ -84,6 +124,11 @@ def modified_bfs(start_id, node_dict, iteration_limit, depth_limit, reduction_fa
 
 
 def interactive_shell(node_dict):
+    """
+    This function keeps reading and executing user commands.
+    help prints all available commands
+    :param node_dict: dictionary mapping names to node pointers
+    """
     iteration_limit = 1
     depth_limit = 10
     reduction_factor = 5
