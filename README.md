@@ -2,6 +2,7 @@
 I wrote this program to demonstrate my interest in Bloomberg and Bloomberg tech, and to demonstrate my problem solving skills.
 ## Author
 * Farhang Rouhi
+
 ##Introduction
 During the Covid-19 pandemic, disruption in supply chains has been one of the strongest forces affecting the markets.
 Analyzing supply chain data can be very useful for traders and investors in times like this when supply chains are being disrupted.
