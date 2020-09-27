@@ -1,5 +1,4 @@
 # Supply Chain Analysis
-I wrote this program to demonstrate my interest in Bloomberg and Bloomberg tech, and to demonstrate my problem solving skills.
 
 ## Author
 * Farhang Rouhi
